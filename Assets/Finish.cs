@@ -8,7 +8,8 @@ public class Finish : MonoBehaviour
     {
         if (other.CompareTag("Sheep"))
         {
-            Debug.Log("finish");
+            GameManager.instance.Win();
         }
     }
+   
 }

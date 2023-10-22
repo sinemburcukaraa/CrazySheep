@@ -15,7 +15,7 @@ public class UIManager : MonoBehaviour
     public void OpenWinPanel()
     {
         winPanel.gameObject.SetActive(true);
-
+        startPanel.SetActive(false);
     }
     public void OpengameOverPanel()
     {

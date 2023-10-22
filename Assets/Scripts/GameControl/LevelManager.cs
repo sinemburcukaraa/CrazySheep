@@ -13,7 +13,6 @@ public class LevelManager : MonoBehaviour
     {
         if (!instance)
             instance = this;
-
     }
     private void Start()
     {

@@ -6,7 +6,6 @@ using DG.Tweening;
 
 public class GameManager : MonoBehaviour
 {
-
     public static GameManager instance;
     public enum GameSit { notStarted, Started, Win, GameOver }
 
@@ -17,7 +16,10 @@ public class GameManager : MonoBehaviour
         if (!instance)
             instance = this;
     }
-
+    private void Start()
+    {
+        NotStarted();
+    }
     public void Win()
     {
         if (gameSit == GameSit.Started)
@@ -27,6 +29,7 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetInt("nextLevel", PlayerPrefs.GetInt("nextLevel") + 1);
 
             UIManager.instance.OpenWinPanel();
+            UIManager.instance.gamePanel.SetActive(false);
         }
     }
 
@@ -39,6 +42,7 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetInt("nextLevel", PlayerPrefs.GetInt("nextLevel"));
 
             UIManager.instance.OpengameOverPanel();
+            UIManager.instance.gamePanel.SetActive(false);
 
         }
     }
@@ -58,12 +62,13 @@ public class GameManager : MonoBehaviour
         if (gameSit != GameSit.Started)
         {
             gameSit = GameSit.notStarted;
-            UIManager.instance.OpenStartPanel();
 
             LevelManager.instance.NextLevel();
             if (Input.GetMouseButtonUp(0))
             {
                 //Invoke("Win", 2.0f);
+                UIManager.instance.OpenStartPanel();
+
                 Started();
             }
 

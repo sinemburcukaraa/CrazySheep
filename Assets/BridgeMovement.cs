@@ -7,17 +7,18 @@ using System.Linq;
 
 public class BridgeMovement : MonoBehaviour
 {
+    BridgeScaleRate bridgeScaleRate;
     public delegate void Movement();
     public static event Movement movement;
-    Delegate[] funcs = new Delegate[4];
+    public Delegate[] funcs = new Delegate[4];
     public int tapCount = 0;
     public List<int> index = new List<int>();
     float yPos;
+    public bool addFunc;
     void Start()
     {
-
         yPos = this.transform.position.y;
-        AddFuncs();
+        bridgeScaleRate = this.GetComponent<BridgeScaleRate>();
     }
     public void AddFuncs()
     {
@@ -28,29 +29,55 @@ public class BridgeMovement : MonoBehaviour
         funcs = movement.GetInvocationList();
         ((Movement)funcs[index[0]]).Invoke();
     }
+    public void RemoveFuncs()
+    {
+        movement -= ScaleMovement;
+        movement -= RotateMovement;
+        movement -= MoveUpAndDown;
+
+    }
     public void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (GameManager.instance.gameSit == GameManager.GameSit.Started)
         {
-            tapCount++;
-            DOTween.Kill(0);
-            chooseFuncs();
+            if (Input.GetMouseButtonDown(0))
+            {
+                tapCount++;
+                DOTween.Kill(0);
+                chooseFuncs();
+            }
+
+            if (!addFunc)
+            {
+                addFunc = true;
+                AddFuncs();
+            }
         }
+
     }
 
     public void chooseFuncs()
     {
+        Debug.Log(index.Count);
         if (index.Count == 1)
         {
             if (tapCount == 1)
-                MovementManager.Instance.BridgeScaleRate.rate();
+            {
+                bridgeScaleRate.rate();
+                RemoveFuncs();
+
+            }
         }
         else if (index.Count == 2)
         {
             if (tapCount == 1)
                 ((Movement)funcs[index[1]]).Invoke();
             if (tapCount == 2)
-                MovementManager.Instance.BridgeScaleRate.rate();
+            {
+                bridgeScaleRate.rate();
+                RemoveFuncs();
+
+            }
         }
         else if (index.Count == 3)
         {
@@ -59,21 +86,24 @@ public class BridgeMovement : MonoBehaviour
             if (tapCount == 2)
                 ((Movement)funcs[index[2]]).Invoke();
             if (tapCount == 3)
-                MovementManager.Instance.BridgeScaleRate.rate();
+            {
+                bridgeScaleRate.rate();
+                RemoveFuncs();
+            }
         }
     }
-    public void ScaleMovement()
+    public float fScale, lScale;
+    public void ScaleMovement()//0
     {
-        transform.DOScaleX(4.35f, 1).SetId(0).OnComplete(() =>
+        transform.DOScaleX(fScale, 1).SetId(0).OnComplete(() =>
         {
-            transform.DOScaleX(0.5f, 1).SetId(0).OnComplete(() =>
+            transform.DOScaleX(lScale, 1).SetId(0).OnComplete(() =>
             {
                 ScaleMovement();
             });
         });
     }
-
-    public void RotateMovement()
+    public void RotateMovement()//1
     {
         transform.DOLocalRotate(new Vector3(0, 0, 30), 2).SetId(0).OnComplete(() =>
         {
@@ -83,7 +113,8 @@ public class BridgeMovement : MonoBehaviour
             });
         });
     }
-    public void MoveUpAndDown()
+
+    public void MoveUpAndDown()//2
     {
         transform.DOLocalMoveY(yPos + 1, 2).SetId(0).OnComplete(() =>
         {

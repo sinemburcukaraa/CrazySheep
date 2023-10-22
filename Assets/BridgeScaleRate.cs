@@ -21,38 +21,58 @@ public class BridgeScaleRate : MonoBehaviour
 
 
         float transitionSizeZ = transitionCol.size.z;
-        transitionSizeZ *= 1.2F;
+        transitionSizeZ *= 1.7F;
 
         YPos = this.transform.position.y;
 
-        if (scaleX < 4.3F)//scale oraný tamamsa ama rot deðilse sadece sona takýlsýn      
+        if (scaleX < 3.4F)//scale oraný tamamsa ama rot deðilse sadece sona takýlsýn      
             bCollider.size = new Vector3(bCollider.size.x, bCollider.size.y, sizeZ);
         else
         {
-            Debug.Log("scale ok");
             scaleCont = true;
+            Debug.Log("scale ok" + scaleCont);
         }
 
         if (rot > 300)
             rot = Mathf.Abs(rot) - 360;
 
-        if (Mathf.Abs(rot) > 0.1f)
+        Debug.Log(Mathf.Abs(rot) + "rot");//0
+        if (Mathf.Abs(rot) > 0.4f)
             transitionCol.size = new Vector3(transitionCol.size.x, transitionCol.size.y, transitionSizeZ);
         else
         {
-            Debug.Log("rot ok");
             rotCont = true;
+            Debug.Log("rot ok" + rotCont);
         }
-        if(Mathf.Abs(YPos + (1.4f)) > 0.2)//-1.4
+
+        if (Mathf.Abs((-1.4f) - YPos) > 0.1)//-1.4
+        {
             bCollider.size = new Vector3(bCollider.size.x, bCollider.size.y, sizeZ);
+            transitionCol.size = new Vector3(transitionCol.size.x, transitionCol.size.y, transitionSizeZ);
+
+        }
         else
         {
-            posCont= true;
-            Debug.Log("pos ok");
+            posCont = true;
+            Debug.Log("pos ok" + posCont);
         }
-            
+
 
         MovementManager.Instance.sheepMovement.StartMovementForBridge();
+        Invoke("gameOverControl", 2);
     }
+    public void gameOverControl()
+    {
+        Debug.Log("gfb");
+        if (!scaleCont || !rotCont || !posCont)
+        {
+            GameManager.instance.GameOver();
+        }
+        else
+        {
+            GameManager.instance.Win();
+        }
 
+        SheepMovement.instance.control = true;
+    }
 }

@@ -6,7 +6,6 @@ public class MovementManager : MonoBehaviour
 {
     public bool startMove;
     public SheepMovement sheepMovement;
-    public BridgeScaleRate BridgeScaleRate;
     public static MovementManager Instance;
 
     private void Awake()

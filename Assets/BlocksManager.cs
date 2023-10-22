@@ -27,7 +27,7 @@ public class BlocksManager : MonoBehaviour
             && !forceControl)
         {
             forceControl = true;
-            MovementManager.Instance.sheepMovement.StartMovementForStep();
+            MovementManager.Instance.sheepMovement.StartMovementForStep(); 
         }
 
 

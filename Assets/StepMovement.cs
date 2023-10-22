@@ -11,33 +11,40 @@ public class StepMovement : MonoBehaviour
     float target;
     public bool control;
     public bool isSettled;
+    public bool moveStarted;
     private void Start()//2,46   -2,46
     {
         control = true;
         startPos = this.transform.position;
         target = startPos.y - 5;
-        Move();
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && control && !isSettled)
+        if (GameManager.instance.gameSit == GameManager.GameSit.Started)
         {
+            if (!moveStarted)
+            {
+                Move();
+                moveStarted = true;
+            }
 
-            isSettled = true;
-            control = false;
-            DOTween.Kill(0);
+            if (Input.GetMouseButtonDown(0) && control && !isSettled)
+            {
+                isSettled = true;
+                control = false;
+                DOTween.Kill(0);
+                if (BlocksManager.instance.index < BlocksManager.instance.stepList.Count - 1)
+                    BlocksManager.instance.NextStep(BlocksManager.instance.index += 1);
 
 
-            if (BlocksManager.instance.index < BlocksManager.instance.stepList.Count - 1)
-                BlocksManager.instance.NextStep(BlocksManager.instance.index += 1);
+            }
+            if (Input.GetMouseButtonUp(0))
+                control = true;
 
-         
 
+            
         }
-        if (Input.GetMouseButtonUp(0))
-            control = true;
-
     }
 
     private void Move()
